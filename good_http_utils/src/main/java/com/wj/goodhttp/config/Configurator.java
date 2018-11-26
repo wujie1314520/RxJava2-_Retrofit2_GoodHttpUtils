@@ -43,6 +43,12 @@ public final class Configurator {
         return this;
     }
 
+    public final Configurator withInterceptors(ArrayList<Interceptor> interceptors) {
+        INTERCEPTORS.addAll(interceptors);
+        APP_CONFIGS.put(ConfigKeys.INTERCEPTOR, INTERCEPTORS);
+        return this;
+    }
+
     @SuppressWarnings("unchecked")
     final <T> T getConfiguration(Object key) {
         final Object value = APP_CONFIGS.get(key);

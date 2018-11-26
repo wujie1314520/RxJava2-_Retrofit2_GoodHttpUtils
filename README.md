@@ -1,4 +1,4 @@
-# RxJava2-_Retrofit2_GoodHttpUtils
+# RxJava2_Retrofit2_GoodHttpUtils
 该网络库基于OkHttp3，Retrofit2和RxJava2进行了高度封装，使网络请求变得异常方便，支持单文件，多文件上传及进度监听，支持文件下载及进度监听
 
 ## 目前对以下需求进行了封装
@@ -11,8 +11,6 @@
 * 文件下载监听进度
 
 ##项目展示
-![](https://github.com/wujie1314520/RxJava2-_Retrofit2_GoodHttpUtils/blob/master/imgs/goodhttp1.png)
-![](https://github.com/wujie1314520/RxJava2-_Retrofit2_GoodHttpUtils/blob/master/imgs/goodhttp2.png)
 ![](https://github.com/wujie1314520/RxJava2-_Retrofit2_GoodHttpUtils/blob/master/imgs/goodhttp3.png)
 
 ## 用法
@@ -25,7 +23,7 @@ NetConfig.init(this)
                 .configure();
 ```
 ##其次，根据服务端的接口协议，申明接口
-## IService
+## INetService
 ```java
 public interface INetService {
     @GET("activity/query")
@@ -101,6 +99,69 @@ public class ApiService {
     }
 
 }
+```
+##统一的异常返回处理，需要根据自己服务端返回的格式做适配
+```java
+public class ErrorAction implements Consumer<Throwable> {
+    @Override
+    public void accept(Throwable throwable) throws Exception {
+        Logger.e("异常日志", throwable);
+        if (throwable instanceof ConnectException || throwable instanceof UnknownHostException) {
+            ToastUtils.showShortSafe("网络错误");
+        } else if (throwable instanceof SocketTimeoutException) {
+            ToastUtils.showShortSafe("连接超时，请重试");
+        } else if (throwable instanceof HttpException) {
+            ToastUtils.showShortSafe("服务器错误(" + ((HttpException) throwable).code());
+        } else if (throwable instanceof ApiException) {
+            onApiError((ApiException) throwable);
+        } else {
+            //未知错误，最好将其上报给服务端，供异常排查
+            if (!TextUtils.isEmpty(throwable.getMessage())) {
+                ToastUtils.showShortSafe(throwable.getMessage());
+            }
+        }
+    }
+    public void onApiError(ApiException throwable) {
+        //有errorMsg优先吐msg,没有吐errcode,两者区别：msg一般是比较友好的中文说明
+        if (throwable.getMessage() != null)
+            ToastUtils.showShortSafe(throwable.getMessage());
+        else if (throwable.getErrorCode() != null) {
+            ToastUtils.showShortSafe(throwable.getErrorCode());
+        }
+    }
+}
+```
+##拦截器，内置了用户身份认证拦截器
+```java
+@Override
+    public Response intercept(Interceptor.Chain chain) throws IOException {
+        Request.Builder builder = chain.request().newBuilder().addHeader("User-Agent", APP_TAG); // 标明发送本次请求的客户端
+        Logger.d(APP_TAG);
+        //如果用户已经登陆，每次请求头带上token
+        if (StringUtils.isNotBlank(AccountManager.getInstance().getToken())) {
+            builder.addHeader("token", AccountManager.getInstance().getToken());
+            Logger.i("token：%s", AccountManager.getInstance().getToken());
+        }
+        Request request = builder.build();
+        Response response = null;
+        try {
+            response = chain.proceed(request);
+            String responseBody = getResponse(response);
+            //处理登录过期情况
+            handleTokenExpired(responseBody);
+        } catch (IOException e) {
+            Logger.e(e.getMessage());
+        }
+        return response;
+    }
+```
+##如果需要拓展拦截器，可以
+```java
+NetConfig.init(this)
+                .withApiHost(BuildConfig.DEBUG ? Constant.API_URL.ENV_DEV : Constant.API_URL.ENV_PROD) //调试环境Url Or 生产环境Url
+                .isNetLogDebug(BuildConfig.DEBUG)  //生产环境不打印网络日志
+                .withInterceptors(Arrays.asList(new CookieInterceptors()))
+                .configure();
 ```
 ##一般的请求
 ```java
