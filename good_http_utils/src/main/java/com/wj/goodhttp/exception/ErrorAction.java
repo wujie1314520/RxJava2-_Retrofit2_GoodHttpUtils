@@ -27,7 +27,7 @@ public class ErrorAction implements Consumer<Throwable> {
         } else if (throwable instanceof ApiException) {
             onApiError((ApiException) throwable);
         } else {
-            //未知错误，做好需要将其上报给服务端，供异常排查
+            //未知错误，最好将其上报给服务端，供异常排查
             if (!TextUtils.isEmpty(throwable.getMessage())) {
                 ToastUtils.showShortSafe(throwable.getMessage());
             }
