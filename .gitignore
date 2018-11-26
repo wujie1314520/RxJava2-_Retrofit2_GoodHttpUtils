@@ -1,0 +1,19 @@
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/*/build/
+/captures
+.externalNativeBuild
+*.apk
+*.ap_
+*.dex
+# Java class files
+*.class
+bin/
+gen/
+proguard/
+*.log

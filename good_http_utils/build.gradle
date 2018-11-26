@@ -1,0 +1,50 @@
+apply plugin: 'com.android.library'
+apply plugin: 'me.tatarka.retrolambda' //retrolambda表达式
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
+
+    defaultConfig {
+        minSdkVersion 18
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.+'
+    testCompile 'junit:junit:4.12'
+    //网络请求依赖 RxJava2 + Retrofit2 + OkHttp3
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'//导入Retrofit
+    compile 'io.reactivex.rxjava2:rxjava:2.1.1' //RxJava
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.2' //RxAndroid
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'//转换器，请求结果转换成VO
+    compile 'com.squareup.retrofit2:converter-scalars:2.3.0' //转换器，请求结果转换成原始json字符串
+    compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'//配合Rxjava使用，将retofit的call映射成Observable
+    compile 'com.alibaba:fastjson:1.1.57.android' //JSON依赖Android版，在请求数据较大时fastjson效率远高于gson
+    //网络请求日志拦截器
+    compile('com.github.ihsanbal:LoggingInterceptor:2.0.5') {
+        exclude group: 'org.json', module: 'json'
+    }
+    compile 'com.blankj:utilcode:1.7.1' //android工具类
+    compile 'com.orhanobut:logger:2.1.1' //日志
+}
