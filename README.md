@@ -1,6 +1,6 @@
 # RxJava2_Retrofit2_GoodHttpUtils
-该网络库基于OkHttp3，Retrofit2和RxJava2进行了高度封装，使网络请求变得异常方便，支持单文件，多文件上传及进度监听，支持文件下载及进度监听
-
+该网络库基于OkHttp3，Retrofit2和RxJava2进行了高度封装，使网络请求变得异常方便，支持单文件，多文件上传及进度监听，支持文件下载及进度监听，支持统一的异常返回处理，身份认证拦截器等。
+[详见博客](https://blog.csdn.net/baiyicanggou_wujie/article/details/84555103)
 ## 目前对以下需求进行了封装
 * 一般的请求（类似表单）
 * 传复杂的Json对象
