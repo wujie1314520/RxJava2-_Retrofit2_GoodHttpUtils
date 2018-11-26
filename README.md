@@ -10,6 +10,11 @@
 * 多文件上传监听进度+其他表单参数
 * 文件下载监听进度
 
+##项目展示
+![](https://github.com/wujie1314520/RxJava2-_Retrofit2_GoodHttpUtils/blob/master/imgs/goodhttp1.png)
+![](https://github.com/wujie1314520/RxJava2-_Retrofit2_GoodHttpUtils/blob/master/imgs/goodhttp2.png)
+![](https://github.com/wujie1314520/RxJava2-_Retrofit2_GoodHttpUtils/blob/master/imgs/goodhttp3.png)
+
 ## 用法
 ## 在Application的onCreate中初始化配置
 ```java
